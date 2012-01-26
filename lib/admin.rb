@@ -8,9 +8,15 @@ module FlexCP
       case command
       when 'new'
         puts "usage new"
+      when 'list'
+        puts 'usage list'
       when 'delete'
         puts "usage delete"
       end
+    end
+
+    def list
+      puts 'list all projects'
     end
 
     def new(project)

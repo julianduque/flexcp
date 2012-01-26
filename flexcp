@@ -10,6 +10,7 @@ def usage
   puts 'Available commands, type "flexcp help COMMAND" for more details:'
   puts ''
   puts '  new       # create a project'
+  puts '  list      # list all projects'
   puts '  delete    # delete a project'
   puts '  load      # load a file'
   puts '  process   # process the data'
@@ -33,7 +34,9 @@ processor = FlexCP::Processor.new
 
 case command
   when 'new'
-    admin.new("eso")  
+    admin.new("eso")
+  when 'list'
+    admin.list
   when 'delete'
     admin.delete("eso")
   when 'load'
@@ -48,7 +51,7 @@ case command
   when 'help'
     help_command = ARGV.shift
     case help_command
-      when 'new', 'delete'
+      when 'new', 'delete', 'list'
         admin.help(help_command)
       when 'load'
         loader.help
