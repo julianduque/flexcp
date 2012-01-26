@@ -11,7 +11,8 @@ module FlexCP
       puts ''
     end
     
-    def load(file)
+    def load(filename)
+      puts filename
     end
   end
 end

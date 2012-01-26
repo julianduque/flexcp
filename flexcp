@@ -1,14 +1,16 @@
 #!/usr/bin/env ruby
-$LOAD_PATH << './lib'
 
-require 'loader'
-require 'processor'
+Dir[File.join(File.dirname(__FILE__), "lib", "*.rb")].each do |file|
+  require file
+end
 
 def usage
   puts 'Usage: flexcp COMMAND [-p PROJECT] [command-specific-options]'
   puts ''
   puts 'Available commands, type "flexcp help COMMAND" for more details:'
   puts ''
+  puts '  new       # create a project'
+  puts '  delete    # delete a project'
   puts '  load      # load a file'
   puts '  process   # process the data'
   puts ''
@@ -25,15 +27,29 @@ end
 
 command = ARGV.shift
 
+admin = FlexCP::Admin.new
 loader = FlexCP::Loader.new
 processor = FlexCP::Processor.new
 
 case command
+  when 'new'
+    admin.new("eso")  
+  when 'delete'
+    admin.delete("eso")
   when 'load'
+    if ARGV.empty?
+      loader.help
+      exit
+    end
+    
+    filename = ARGV.shift
+    loader.load filename
   when 'process'
   when 'help'
     help_command = ARGV.shift
     case help_command
+      when 'new', 'delete'
+        admin.help(help_command)
       when 'load'
         loader.help
       when 'process'
