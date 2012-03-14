@@ -1,0 +1,14 @@
+GEM
+  specs:
+    bson (1.5.2)
+    bson_ext (1.5.2)
+      bson (= 1.5.2)
+    mongo (1.5.2)
+      bson (= 1.5.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bson_ext
+  mongo

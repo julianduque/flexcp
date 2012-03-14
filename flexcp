@@ -1,16 +1,20 @@
 #!/usr/bin/env ruby
+require 'mongo'
+
+# TODO: This file is subject to refactorization.. so much spaghetti code
 
 Dir[File.join(File.dirname(__FILE__), "lib", "*.rb")].each do |file|
   require file
 end
 
+# Application Help
 def usage
-  puts 'Usage: flexcp COMMAND [-p PROJECT] [command-specific-options]'
+  puts 'Usage: flexcp COMMAND [PROJECT] [command-specific-options]'
   puts ''
   puts 'Available commands, type "flexcp help COMMAND" for more details:'
-  puts ''
   puts '  new       # create a project'
   puts '  list      # list all projects'
+  puts '  show      # show project content'
   puts '  delete    # delete a project'
   puts '  load      # load a file'
   puts '  process   # process the data'
@@ -28,26 +32,57 @@ end
 
 command = ARGV.shift
 
+# Load modules
 admin = FlexCP::Admin.new
 loader = FlexCP::Loader.new
 processor = FlexCP::Processor.new
 
 case command
+  # New project command
   when 'new'
-    admin.new("eso")
+    project_name = ARGV.shift
+    if project_name
+      admin.new(project_name)
+    else
+      puts "project name required"
+    end
+  # List projects command
   when 'list'
     admin.list
+  # Show project content command
+  when 'show'
+    project_name = ARGV.shift
+    if project_name
+      admin.show(project_name)
+    else
+      puts "project name required"
+    end
+  # Delete project command
   when 'delete'
-    admin.delete("eso")
+    project_name = ARGV.shift
+    if project_name
+      admin.delete(project_name)
+    else
+      puts "project name required"
+    end
+  # Load files to a project command
   when 'load'
     if ARGV.empty?
       loader.help
       exit
     end
     
-    filename = ARGV.shift
-    loader.load filename
+    if ARGV.size == 3
+      project_name = ARGV.shift
+      height = ARGV.shift
+      filename = ARGV.shift
+      loader.load(project_name, height, filename)
+    else
+      loader.help
+    end
+  # Process project files command 
   when 'process'
+  # Help command
   when 'help'
     help_command = ARGV.shift
     case help_command
@@ -60,6 +95,7 @@ case command
       else
         error(help_command)  
     end
+  # Alternative  help command 
   when '--help' , '-h'
     usage
   else
