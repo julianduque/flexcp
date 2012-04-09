@@ -12,8 +12,13 @@ module FlexCP
     end
     
     def load(project_name, height, filename)
-      project = @projects.find('name' => project_name).first
+      project = get_project(project_name)
+      
       if project
+        if !project['trajectories'].include?(height)
+          @projects.update({'_id' => project['_id']}, {'$push' => {"trajectories" => height}})
+        end
+    
         @trajectories.remove("_height" => height)
         file = File.new(filename, 'r')
         file.each_line do |row|
@@ -36,12 +41,18 @@ module FlexCP
               "height" => columns.shift.strip,
               "press" => columns.shift.strip
             }
-            @trajectories.insert(content) 
+            @trajectories.insert(content)
           end
         end
       else
         puts "project '#{project_name}' not found"
       end
+    end
+    
+    private
+    
+    def get_project(project_name)
+      @projects.find("name" => project_name).first
     end
   end
 end

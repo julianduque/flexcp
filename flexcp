@@ -82,6 +82,20 @@ case command
     end
   # Process project files command 
   when 'process'
+    if ARGV.empty?
+      processor.help
+      exit
+    end
+    
+    if ARGV.size < 3
+      puts "*  process: not enough arguments"
+      exit
+    end
+    
+    project_name = ARGV.shift
+    lt = ARGV.shift
+    trajectories = ARGV
+    processor.process(project_name, lt, trajectories)    
   # Help command
   when 'help'
     help_command = ARGV.shift

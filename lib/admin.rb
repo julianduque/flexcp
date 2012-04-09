@@ -4,6 +4,7 @@ module FlexCP
     def initialize
       db = Mongo::Connection.new.db("flexcp")
       @projects = db['projects']
+      @trajectories = db['trajectories'] 
     end
     
     def help(command)
@@ -29,27 +30,43 @@ module FlexCP
     end
     
     def show(project_name)
+      project = get_project(project_name)
+      if project
+        puts "*  #{project['name']}"
+        project['trajectories'].each do |t|
+          puts "    - #{t}"
+        end
+      else
+        puts "No projects found"
+      end
     end
 
     def new(project_name)
-      project = @projects.find("name" => project_name).first
+      project = get_project(project_name)
       if project
         puts "project '#{project_name}' already exists"
       else
-        project = { "name" => project_name }
+        project = { "name" => project_name, "trajectories" => []}
         @projects.insert(project)
         puts "project '#{project_name}' successfully created"
       end
     end
     
     def delete(project_name)
-      project = @projects.find("name" => project_name).first
+      project = get_project(project_name)
       if project
+        @trajectories.remove("_project_id" => project['_id'])
         @projects.remove("name" => project_name)
         puts "project '#{project_name}' successfully removed"
       else
         puts "project '#{project_name}' doesn't exist"
       end
+    end
+    
+    private
+    
+    def get_project(project_name)
+      @projects.find("name" => project_name).first
     end
     
   end
