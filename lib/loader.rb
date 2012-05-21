@@ -23,18 +23,18 @@ module FlexCP
         file = File.new(filename, 'r')
         file.each_line do |row|
           if file.lineno > 1
-            columns = row.split(',')
+            columns = row.split("\t")
             content = {
               "_project_id" => project["_id"],
               "_height" => height,
+              "toid" => columns.shift.strip,
+              "foid" => columns.shift.strip, 
               "start_year" => columns.shift.strip,
               "start_month" => columns.shift.strip,
               "start_date" => columns.shift.strip,
               "start_hour" => columns.shift.strip,
-              "year" => columns.shift.strip,
-              "month" => columns.shift.strip,
-              "day" => columns.shift.strip,
-              "hour" => columns.shift.strip,
+              "minute" => columns.shift.strip,
+              "fhour" => columns.shift.strip,
               "age_hour" => columns.shift.strip,
               "latitude" => columns.shift.strip,
               "longitude" => columns.shift.strip,
